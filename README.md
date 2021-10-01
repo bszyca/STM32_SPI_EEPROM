@@ -12,7 +12,8 @@ Connect M95256 to Nucleo - communication via SPI
 
 UART is displaying values of buffers transmitted and received via SPI. 
 There is also POWER FAIL protection which is causing the double Read Status when starting the program:
-![click](https://ibb.co/kK18BsF)
+
+![spi_eeprom](https://user-images.githubusercontent.com/91716038/135610682-273f8405-f37a-4da8-a4de-6a5663e42ba7.PNG)
 
 
 
