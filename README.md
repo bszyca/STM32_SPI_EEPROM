@@ -5,7 +5,10 @@ Using:
 -M95256 EEPROM chip [datasheet](https://www.tme.eu/Document/5be30b2aa7342810d9a9eeb5ab0cd0f7/M95256-WMN6P-DTE.pdf),                                                                 
 -G071RB Nucleo board. 
 
- Connect M95256 to Nucleo                                                                                                                                                       *standard SPI configuration                                                                                                                                                       *standard UART configuartion                                                                                                                                                      *HOLD and WRITE PROTECT pins set as Output ( Output level set as high)                                                                                                       
+ Connect M95256 to Nucleo   
+ *standard SPI configuration    
+ *standard UART configuartion    
+ *HOLD and WRITE PROTECT pins set as Output ( Output level set as high)   
 *blue button on pin PC13 set as Input                                                                                                                                             
                                                                                                                                                                                               
 
