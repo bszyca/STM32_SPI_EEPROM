@@ -1,5 +1,5 @@
-# STM32_SPI_EEPROM
-EEPROM basic read-write functions using SPI and UART communication.
+# STM32_SPI_EEPROM                                                                                                                                                                             
+EEPROM basic read-write functions using SPI and UART communication.                                                                                                                
 The main branch is a project using HAL functions.                                                                                                                                         
 In the register branch you have the same program using only registers.                                                                                                            
 
@@ -11,7 +11,7 @@ Using:
  *HOLD and WRITE PROTECT pins set as Output ( Output level set as high)                                                                                                               
 *blue button on pin PC13 set as Input + look for the macros in main.h                                                                                                                       
 
-GPIO:
+GPIO:                                                                                                                                                                              
 -> PA0 and PA1- HOLD and WRITE PROTECT pins set as Output (high)       			                                       																																																		                
 -> PB0 - CS - Output (high)												                    																																																															                                                                 
 -> PA5 - SCK - Alternate Function																																																                                                                                         																								
@@ -19,7 +19,7 @@ GPIO:
 -> PA7 - MOSI - Alternate Function															                                                                                 																																																										
                                                                                                                                                                                               
 
-UART is displaying variables transmitted and received via SPI.                                                                                                            
+UART is displaying variables transmitted and received via SPI.                                                                                                                                                   
 There is also POWER FAIL protection which is causing the double Read Status when starting the program:
 
 ![spi_eeprom](https://user-images.githubusercontent.com/91716038/135610682-273f8405-f37a-4da8-a4de-6a5663e42ba7.PNG)
