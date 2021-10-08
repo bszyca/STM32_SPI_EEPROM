@@ -4,6 +4,7 @@ In the main branch is a program using HAL functions.
 In the register branch you have the same program using only registers.  
 
 
+
 Using:                                                                                                                                                                                  
 -M95256 EEPROM chip [datasheet](https://www.tme.eu/Document/5be30b2aa7342810d9a9eeb5ab0cd0f7/M95256-WMN6P-DTE.pdf),                                                                 
 -G071RB Nucleo board. 
@@ -24,6 +25,7 @@ GPIO:
 
 -> PA7 - MOSI - Alternate Function											                                                                                                                                                                                           				                                                                                 																			
                                                                                                                                                                                               
+
 
 
 UART is displaying variables transmitted and received via SPI.                                                                                                                                                   
