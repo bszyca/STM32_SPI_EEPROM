@@ -1,6 +1,6 @@
 # STM32_SPI_EEPROM
 EEPROM basic read-write functions using SPI and UART communication.
-The main branch is a project using HAL functions. 
+The main branch is a project using HAL functions.                                                                                                                                 
 In the register branch you have the same program using only registers.
 
 Using:                                                                                                                                                                                  
@@ -12,11 +12,11 @@ Using:
 *blue button on pin PC13 set as Input + look for the macros in main.h 
 
 GPIO:
--> PA0 and PA1- HOLD and WRITE PROTECT pins set as Output (high)
--> PB0 - CS - Output (high)
--> PA5 - SCK - Alternate Function
--> PA6 - MISO - Alternate Function
--> PA7 - MOSI - Alternate Function
+-> PA0 and PA1- HOLD and WRITE PROTECT pins set as Output (high)       																																																					 
+-> PB0 - CS - Output (high)																																																																											
+-> PA5 - SCK - Alternate Function																																																																								
+-> PA6 - MISO - Alternate Function																																																																							
+-> PA7 - MOSI - Alternate Function																																																																									
                                                                                                                                                                                               
 
 UART is displaying variables transmitted and received via SPI.                                                                                                            
