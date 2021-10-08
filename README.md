@@ -1,6 +1,6 @@
 # STM32_SPI_EEPROM                                                                                                                                                                             
 EEPROM basic read-write functions using SPI and UART communication.                                                                                                                
-The main branch is a project using HAL functions.                                                                                                                                         
+In the main branch is a program using HAL functions.                                                                                                                                         
 In the register branch you have the same program using only registers.                                                                                                            
 
 Using:                                                                                                                                                                                  
