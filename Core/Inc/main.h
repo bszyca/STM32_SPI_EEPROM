@@ -71,19 +71,12 @@ void Error_Handler(void);
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-//  MAKRA  //
-//(GPIOx->IDR & GPIO_Pin)               // READ PIN (zwraca 1<<GPIO_PIN lub 0)
-//((GPIOx->IDR & GPIO_Pin)/GPIO_Pin)    // READ PIN (zwraca 1 lub 0)
-//GPIOx->BSRR = (uint32_t)GPIO_Pin      // SET PIN
-//GPIOx->BRR = (uint32_t)GPIO_Pin       // RESET PIN
-//GPIOx->BSRR = ((GPIOx->ODR & GPIO_Pin) << 16u) | (~(GPIOx->ODR) & GPIO_Pin) // TOGGLE PIN
-
 #define READ_PIN(GPIO_Port, GPIO_Pin)     ((GPIO_Port->IDR & GPIO_Pin)/GPIO_Pin)
 #define SET_PIN(GPIO_Port, GPIO_Pin)      GPIO_Port->BSRR = (uint32_t)GPIO_Pin
 #define RESET_PIN(GPIO_Port, GPIO_Pin)    GPIO_Port->BRR = (uint32_t)GPIO_Pin
 #define TOGGLE_PIN(GPIO_Port, GPIO_Pin)   GPIO_Port->BSRR = ((GPIO_Port->ODR & GPIO_Pin) << 16u) | (~(GPIO_Port->ODR) & GPIO_Pin)
 
-#define Read_Button READ_PIN(button_GPIO_Port , button_Pin)
+#define BUTTON READ_PIN(button_GPIO_Port ,button_Pin )
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

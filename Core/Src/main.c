@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "uart.h"
+#include "spi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,7 +34,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -61,7 +61,7 @@ uint8_t komenda_wrsr = WRSR;
 
 char uart_buf[50];
 int uart_buf_len;
-
+uint8_t status;
 
 uint8_t spi_buf_rx[20];
 uint8_t spi_buf_tx[20];
@@ -69,9 +69,6 @@ uint8_t rx_buf_g[20];
 
 uint8_t tx_buf[20];
 uint8_t rx_buf[20];
-
-
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,31 +77,32 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
-
+void Uart_Config(void);
+void GPIO_Config(void);
+void Send_Char(char c);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void Read_Status(void)
 {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);//CS Enable
-    HAL_SPI_Transmit(&hspi1, &komenda_rdsr, 1, 100);
-    HAL_SPI_Receive(&hspi1, rx_buf_g, 1, 100);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);//CS Disable
+    SPI_Enable();
+    SPI_Send_Char(RDSR);
+    SPI_Read(&status);
+    SPI_Disable();
 }
 
 void Write_Enable(void)
 {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&hspi1, &komenda_wren, 1, 100);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+    SPI_Enable();
+    SPI_Send_Char(WREN);
+    SPI_Disable();
 }
 
-void Write (uint8_t* tx_buf, uint16_t addr, int size)
+void Write(uint8_t* tx_buf,uint16_t addr, int size)
 {
     Write_Enable();
-
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+    SPI_Enable();
 
     uint8_t temp_buf[3];
     uint8_t temp_addr = addr;
@@ -113,29 +111,31 @@ void Write (uint8_t* tx_buf, uint16_t addr, int size)
     temp_buf[1] = (temp_addr>>8); //second byte - MSB
     temp_buf[2] = (temp_addr & 0xff);//third byte - LSB
 
-    HAL_SPI_Transmit(&hspi1, temp_buf, 3, 100); //transmit this 3 bytes
+    // SPI_Send_Char(temp_buf);
+    SPI_Send_Char(temp_buf[0]);
+    SPI_Send_Char(temp_buf[1]);
+    SPI_Send_Char(temp_buf[2]);
 
-    for (int n=0; n<size; n++)
-    {
-        HAL_SPI_Transmit(&hspi1, &tx_buf[n], 1, 100);
-        HAL_Delay(10);
-    }
-
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+    SPI_Send_String(&tx_buf[0]);
+    //    for (int n=0; n<size; n++)
+    //    {
+    //        SPI_Send_Char(tx_buf[n]);
+    //       // SPI_Send_String(&tx_buf[n]);
+    //    }
+    SPI_Disable();
 }
-
 void UART_Write_Status(uint8_t* tx_buf, int size)
 {
-               uart_buf_len = sprintf(uart_buf,
-                       "Status W: %s \r\n",
-                       (unsigned int)tx_buf);
-               HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_buf_len, 100);
+    uart_buf_len = sprintf(uart_buf,
+            "Status W: %s \r\n",
+            (unsigned int)tx_buf);
+    UART_Send_String((uint8_t *)uart_buf);
+
 
 }
-
-void Read (uint8_t* rx_buf, uint16_t addr, int size)
+void Read(uint8_t* rx_buf, uint16_t addr, int size)
 {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+    SPI_Enable();
 
     uint8_t tx_buf[3];
     uint8_t temp_addr = addr;
@@ -150,13 +150,15 @@ void Read (uint8_t* rx_buf, uint16_t addr, int size)
     tx_buf[1] = (temp_addr>>8);//second byte - MSB
     tx_buf[2] = (temp_addr & 0xff);//third byte - LSB
 
-    HAL_SPI_Transmit(&hspi1, tx_buf, 3, 100); //transmit this 3 bytes
-
+    SPI_Send_Char(tx_buf[0]);
+    SPI_Send_Char(tx_buf[1]);
+    SPI_Send_Char(tx_buf[2]);
     for (int n=0; n<size; n++)
     {
-        HAL_SPI_Receive(&hspi1, &rx_buf[n], 1, 100);
+        SPI_Read( &rx_buf[n]);
     }
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+    SPI_Disable();
+
 }
 
 void UART_Read_Status( uint8_t* rx_buf,int size)
@@ -164,9 +166,9 @@ void UART_Read_Status( uint8_t* rx_buf,int size)
     uart_buf_len = sprintf(uart_buf,
             "Status R: %s \r\n",
             (unsigned int)rx_buf);
-    HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_buf_len, 100);
-}
+    UART_Send_String((uint8_t *)uart_buf);
 
+}
 /* USER CODE END 0 */
 
 /**
@@ -177,7 +179,6 @@ int main(void)
 {
     /* USER CODE BEGIN 1 */
 
-
     /* USER CODE END 1 */
 
     /* MCU Configuration--------------------------------------------------------*/
@@ -187,74 +188,72 @@ int main(void)
 
     /* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+    /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* Configure the system clock */
+    SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+    /* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+    /* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_USART2_UART_Init();
-  MX_SPI1_Init();
-  /* USER CODE BEGIN 2 */
+    /* Initialize all configured peripherals */
+    // MX_GPIO_Init();
+    //  MX_USART2_UART_Init();
+    //  MX_SPI1_Init();
+    /* USER CODE BEGIN 2 */
+    //GPIO_Config();
+    UART_Config();
+    SPI_Config();
 
-  Read(rx_buf, 0, sizeof (rx_buf));
-  UART_Read_Status(rx_buf, strlen (rx_buf));
-  /* USER CODE END 2 */
+    //Read in caSE OF POWER FAIL
+    Read(rx_buf, 0, sizeof (rx_buf));
+    UART_Read_Status(rx_buf, strlen (rx_buf));
+    /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
+    while (1)
+    {
+        /* USER CODE END WHILE */
 
-      /* USER CODE END WHILE */
+        /* USER CODE BEGIN 3 */
+//
+        if (BUTTON == 0)
+        {
 
-      /* USER CODE BEGIN 3 */
+            for (int m=0; m<20; m++ )
+                     {
+                         rx_buf[m] = 0;
+                     }
 
-      if (Read_Button == 0) //if button is set... // hold the button if you want to repeat this sequence
-      {
-          for (int m=0; m<20; m++ )
-          {
-              rx_buf[m] = 0;
-          }
+        char tx_buf[] ="beautiful";
 
-          HAL_Delay(100);//just in case
+        // EEPROM WRITE
+        Write(tx_buf, 0, strlen (tx_buf)+1);
+        UART_Write_Status(tx_buf, strlen (tx_buf));
 
-          char tx_buf[] ="beautiful";
+        //EEPROM READ
+        Read(rx_buf, 0, sizeof (rx_buf));
+        UART_Read_Status(rx_buf, strlen (rx_buf));
 
-          //EEPROM WRITE
-          Write(tx_buf, 0, strlen (tx_buf)+1);
-          UART_Write_Status(tx_buf, strlen (tx_buf));
-
-          //EEPROM READ
-          Read(rx_buf, 0, sizeof (rx_buf));
-          UART_Read_Status(rx_buf, strlen (rx_buf));
-
-          //UART new line
-          uart_buf_len = sprintf(uart_buf, "\r\n");
-          HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, uart_buf_len, 100);
-
-
-          HAL_NVIC_SystemReset(); //to simulate power fail
-
-          HAL_Delay(100);
-
-          //  pressed = 1;
-      }
+        //UART new line
+        uart_buf_len = sprintf(uart_buf, "\r\n");
+        UART_Send_String((uint8_t *)uart_buf);
 
 
-  }
+        NVIC_SystemReset(); //TO SIMULATE POWER FAIL
+
+        }
 
 
-  /* USER CODE END 3 */
+
+    }
+    /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
+ * @brief System Clock Configuration
   * @retval None
   */
 void SystemClock_Config(void)
@@ -323,7 +322,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -407,7 +406,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
 
   /*Configure GPIO pin : button_Pin */
   GPIO_InitStruct.Pin = button_Pin;
@@ -426,7 +425,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = GPIO_PIN_0;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
