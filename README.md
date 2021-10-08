@@ -12,10 +12,14 @@ Using:
 *blue button on pin PC13 set as Input + look for the macros in main.h                                                                                                                       
 
 GPIO:                                                                                                                                                                              
--> PA0 and PA1- HOLD and WRITE PROTECT pins set as Output (high)       			                                       																																																		                
--> PB0 - CS - Output (high)												                    																																																															                                                                 
--> PA5 - SCK - Alternate Function																																																                                                                       														
--> PA6 - MISO - Alternate Function													                                                                                                                       
+-> PA0 and PA1- HOLD and WRITE PROTECT pins set as Output (high)       		
+
+-> PB0 - CS - Output (high)				
+
+-> PA5 - SCK - Alternate Function			
+
+-> PA6 - MISO - Alternate Function	
+
 -> PA7 - MOSI - Alternate Function											                                                                                                                                                                                           				                                                                                 																			
                                                                                                                                                                                               
 
