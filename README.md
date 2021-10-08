@@ -14,8 +14,10 @@ Using:
 GPIO:                                                                                                                                                                              
 -> PA0 and PA1- HOLD and WRITE PROTECT pins set as Output (high)       			                                       																																																		                
 -> PB0 - CS - Output (high)												                    																																																															                                                                 
--> PA5 - SCK - Alternate Function																																																                                                                                         																								
--> PA6 - MISO - Alternate Function													                                                                                                                                                                                          																			                        																																							
+-> PA5 - SCK - Alternate Function																																																                                                                                         																					
+
+-> PA6 - MISO - Alternate Function													                                                                                                                                                           
+
 -> PA7 - MOSI - Alternate Function											                                                                                                                                                                                           				                                                                                 																																																										
                                                                                                                                                                                               
 
