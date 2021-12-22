@@ -30,6 +30,7 @@ GPIO:
 
 UART is displaying variables transmitted and received via SPI.                                                                                                                                                   
 There is also POWER FAIL protection.
+
 *Update: the doubled Read Status when starting the program -issue with STM32G071RB using RealTerm and Putty
 
 ![spi_eeprom](https://user-images.githubusercontent.com/91716038/135610682-273f8405-f37a-4da8-a4de-6a5663e42ba7.PNG)
